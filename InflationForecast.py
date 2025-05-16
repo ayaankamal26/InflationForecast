@@ -9,6 +9,9 @@ Created on Thu May 15 13:56:06 2025
 import numpy as np
 import pandas as pd
 from datetime import datetime
+import matplotlib.pylab as plt
+from matplotlib.pylab import rcParams
+from statsmodels.tsa.seasonal import seasonal_decompose
 
 #read in CPI data for inflation
 cpi = pd.read_csv("~/Downloads/CPIAUCSL.csv")
@@ -17,10 +20,9 @@ dates = list(cpi.iloc[90:-1,0])
 for i in range(90, len(cpi)-1):
     yearInf = ((cpi.iloc[i, 1]-cpi.iloc[i-12, 1])/cpi.iloc[i-12, 1]) * 100
     yoy.append(yearInf)
-strformat = "%Y-%M-%d"
+strformat = "%Y-%m-%d"
 for i in range(len(dates)):
     dates[i] = datetime.strptime(dates[i], strformat)
-    dates[i] = dates[i].replace(hour=12, minute = 0)
 df = pd.DataFrame(zip(dates, yoy), columns = ["Date", "YoY Inflation"])
 
 #add exogenous vars
@@ -29,3 +31,31 @@ df["Fed Funds"] = fedfundsrate.iloc[:-1,1]
 unempl = pd.read_csv("~/Downloads/UNRATE-3.csv")
 df["Unemployment Rate"] = unempl.iloc[:-1,1]
 df = df.set_index("Date")
+
+result = seasonal_decompose(df["YoY Inflation"], model = "additive", period = 12)
+trend = result.trend.dropna()
+seasonal = result.seasonal.dropna()
+residual = result.resid.dropna()
+
+plt.figure(figsize=(6,6))
+
+plt.subplot(4, 1, 1)
+plt.plot(df['YoY Inflation'], label='Original Series')
+plt.legend()
+
+plt.subplot(4, 1, 2)
+plt.plot(trend, label='Trend')
+plt.legend()
+
+plt.subplot(4, 1, 3)
+plt.plot(seasonal, label='Seasonal')
+plt.legend()
+
+plt.subplot(4, 1, 4)
+plt.plot(residual, label='Residuals')
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+
+df["month var"] = df.index.month
