@@ -12,6 +12,7 @@ from datetime import datetime
 import matplotlib.pylab as plt
 from matplotlib.pylab import rcParams
 from statsmodels.tsa.seasonal import seasonal_decompose
+import pmdarima as pm
 
 #read in CPI data for inflation
 cpi = pd.read_csv("~/Downloads/CPIAUCSL.csv")
@@ -58,4 +59,15 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
-df["month var"] = df.index.month
+df["Month"] = df.index.month
+
+model = pm.auto_arima(df[["YoY Inflation"]], exogenous = df[["Fed Funds", "Unemployment Rate", "Month"]],
+                           start_p=1, start_q=1,
+                           test='adf',
+                           max_p=3, max_q=3, m=12,
+                           start_P=0, seasonal=True,
+                           d=None, D=1,
+                           trace=False,
+                           error_action='ignore',
+                           suppress_warnings=True,
+                           stepwise=True)
