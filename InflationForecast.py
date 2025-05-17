@@ -75,3 +75,5 @@ model = pm.auto_arima(df["YoY Inflation"],
 
 future = pd.read_csv("~/Downloads/FORECAST.csv")
 forecast = model.predict(n_periods=24, exogenous=future)
+
+forecast.to_csv("~/Documents/InflationPrediction.csv")
