@@ -39,17 +39,17 @@ This project builds a time series model to forecast U.S. year-over-year inflatio
 - IMF (International Monetary Fund) (https://www.imf.org/external/datamapper)
 - Econ Forecasting (https://econforecasting.com/forecast/ffr)
 
-## 📊 Sample Forecast Output
+## Sample Forecast Output
 
 The model outputs a 24-month forecast of inflation rates, shown in InflationPrediction.csv.
 
-## 📌 How to Run
+## How to Run
 
 1. Download the required CSV files from [FRED](https://fred.stlouisfed.org/).
 2. Update the file paths in the script if needed.
 3. Run the script using Python 3.
 
-## 💡 What I Learned
+## What I Learned
 
 - How to preprocess and transform economic time series data.
 - How to model seasonal patterns and integrate exogenous regressors into forecasting models.
